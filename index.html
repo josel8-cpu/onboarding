@@ -1,0 +1,829 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solicita tu crédito | Profesional</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Estilos adicionales para los nuevos campos (integrados armónicamente) */
+        .form-section-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 25px 0 15px;
+            padding-bottom: 8px;
+            border-bottom: 1px dashed #dee2e6;
+            letter-spacing: -0.2px;
+        }
+
+        .form-section-title:first-of-type {
+            margin-top: 0;
+        }
+
+        .hint-text {
+            font-size: 13px;
+            color: #6c757d;
+            margin-top: 4px;
+            display: block;
+        }
+
+        /* Estilo para el contenedor de subida de archivos */
+        .file-upload-container {
+            margin-top: 10px;
+            border: 2px dashed #1a3b4f;
+            border-radius: 12px;
+            padding: 15px;
+            background-color: #f8fcff;
+            text-align: center;
+        }
+
+        .file-upload-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .file-upload-label span {
+            margin-top: 10px;
+            color: #1a3b4f;
+            font-weight: 500;
+        }
+
+        .file-upload-label small {
+            color: #6c757d;
+            font-size: 12px;
+        }
+
+        #ineFile,
+        #ineTraseraFile {
+            display: none;
+        }
+
+        .file-name {
+            margin-top: 10px;
+            font-size: 13px;
+            color: #1f7b4d;
+        }
+
+        /* Botón NIP y selector de método */
+        .nip-send-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+
+        .btn-nip {
+            background-color: #6c757d;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            width: auto;
+            min-width: 160px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-nip:hover {
+            background-color: #5a6268;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 8px rgba(108, 117, 125, 0.2);
+        }
+
+        /* Botones de método de envío */
+        .method-buttons {
+            display: flex;
+            gap: 10px;
+            flex: 1;
+        }
+
+        .method-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            background-color: white;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            flex: 1;
+            min-width: 120px;
+        }
+
+        .method-btn i {
+            font-size: 20px;
+        }
+
+        .method-btn.whatsapp {
+            color: #25D366;
+            border-color: #25D366;
+        }
+
+        .method-btn.whatsapp:hover {
+            background-color: #25D366;
+            color: white;
+        }
+
+        .method-btn.whatsapp.selected {
+            background-color: #25D366;
+            color: white;
+        }
+
+        .method-btn.sms {
+            color: #1a3b4f;
+            border-color: #1a3b4f;
+        }
+
+        .method-btn.sms:hover {
+            background-color: #1a3b4f;
+            color: white;
+        }
+
+        .method-btn.sms.selected {
+            background-color: #1a3b4f;
+            color: white;
+        }
+
+        .method-btn i {
+            font-style: normal;
+        }
+
+        /* Carrusel de productos - NUEVO ESTILO */
+        .productos-carrusel {
+            margin: 20px 0 30px;
+            position: relative;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .carrusel-wrapper {
+            flex: 1;
+            overflow: hidden;
+            border-radius: 16px;
+        }
+
+        .carrusel-container {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .producto-card {
+            flex: 0 0 100%;
+            max-width: 100%;
+            background: linear-gradient(145deg, #ffffff, #f8fcff);
+            border-radius: 16px;
+            padding: 30px 15px;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e6edf5;
+            transition: transform 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 350px;
+        }
+
+        .producto-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(26, 59, 79, 0.1);
+        }
+
+        .producto-imagen {
+            width: 200px;
+            height: 200px;
+            object-fit: contain;
+            margin-bottom: 20px;
+            border-radius: 12px;
+        }
+
+        .producto-titulo {
+            font-weight: 700;
+            color: #1a3b4f;
+            font-size: 22px;
+        }
+
+        /* Botones de navegación del carrusel */
+        .carrusel-btn {
+            background-color: #1a3b4f;
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            flex-shrink: 0;
+        }
+
+        .carrusel-btn:hover:not(:disabled) {
+            background-color: #0f2c3a;
+            transform: scale(1.1);
+        }
+
+        .carrusel-btn:disabled {
+            background-color: #b4c1ce;
+            cursor: not-allowed;
+            opacity: 0.5;
+        }
+
+        /* Indicadores del carrusel */
+        .carrusel-indicators {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 15px;
+        }
+
+        .indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: #dee2e6;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .indicator.active {
+            background-color: #1a3b4f;
+            transform: scale(1.2);
+        }
+
+        /* Botones de navegación */
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .button-group .btn {
+            flex: 1;
+        }
+
+        .btn-secondary-outline {
+            background-color: transparent;
+            border: 2px solid #1a3b4f;
+            color: #1a3b4f;
+        }
+
+        .btn-secondary-outline:hover {
+            background-color: #1a3b4f;
+            color: white;
+        }
+
+        /* Estilo para reducir el tamaño de las listas desplegables de datalist */
+        datalist {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        /* Mejora visual para los inputs con datalist */
+        input[list] {
+            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%236c757d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 16px;
+        }
+
+        /* Estilo para el campo de género con ambos uploads */
+        .genero-with-uploads {
+            grid-column: span 2;
+        }
+
+        .uploads-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 10px;
+        }
+
+        /* Estilo para campo de solo lectura (Cantidad de Pagos) */
+        input[readonly] {
+            background-color: #e9ecef;
+            cursor: default;
+        }
+
+        @media (max-width: 640px) {
+            .nip-send-container {
+                flex-direction: column;
+            }
+
+            .method-buttons {
+                width: 100%;
+            }
+
+            .genero-with-uploads {
+                grid-column: span 1;
+            }
+
+            .uploads-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .carrusel-btn {
+                width: 30px;
+                height: 30px;
+                font-size: 16px;
+            }
+
+            .producto-imagen {
+                width: 150px;
+                height: 150px;
+            }
+
+            .producto-titulo {
+                font-size: 18px;
+            }
+        }
+    </style>
+    <!-- Agregar Font Awesome para iconos -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Progress Bar (4 pasos) -->
+        <div class="progress-bar">
+            <div class="step active" id="step1">1</div>
+            <div class="step" id="step2">2</div>
+            <div class="step" id="step3">3</div>
+            <div class="step" id="step4">4</div>
+        </div>
+
+        <!-- Etapa 1: Información Personal -->
+        <div id="etapa1" class="etapa active">
+            <h2>Obtén tu preoferta en solo 3 minutos</h2>
+            <form id="formPersonal">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="nombre">Nombre(s) *</label>
+                        <input type="text" id="nombre" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="segundoNombre">Segundo Nombre (opcional)</label>
+                        <input type="text" id="segundoNombre">
+                    </div>
+                    <div class="form-group">
+                        <label for="apellidoPaterno">Apellido Paterno *</label>
+                        <input type="text" id="apellidoPaterno" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="apellidoMaterno">Apellido Materno *</label>
+                        <input type="text" id="apellidoMaterno" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="fechaNacimiento">Fecha de Nacimiento *</label>
+                        <input type="date" id="fechaNacimiento" required>
+                        <small class="hint-text">Debe ser mayor de 18 años</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="estadoCivil">Estado Civil *</label>
+                        <select id="estadoCivil" required>
+                            <option value="">Seleccione</option>
+                            <option value="soltero">Soltero</option>
+                            <option value="casado">Casado</option>
+                        </select>
+                    </div>
+                    <div class="form-group genero-with-uploads">
+                        <label for="genero">Género *</label>
+                        <select id="genero" required>
+                            <option value="">Seleccione</option>
+                            <option value="masculino">Masculino</option>
+                            <option value="femenino">Femenino</option>
+                        </select>
+
+                        <!-- Nuevo espacio para subir INE (ambos lados) -->
+                        <div class="uploads-grid">
+                            <div class="file-upload-container">
+                                <label for="ineFile" class="file-upload-label">
+                                    <i class="fas fa-cloud-upload-alt" style="font-size: 32px; color: #1a3b4f;"></i>
+                                    <span>Subir INE (Frente)</span>
+                                    <small>JPG, PNG, PDF (Máx. 5MB)</small>
+                                </label>
+                                <input type="file" id="ineFile" accept=".jpg,.jpeg,.png,.pdf" required>
+                                <div class="file-name" id="fileNameFrente"></div>
+                            </div>
+
+                            <div class="file-upload-container">
+                                <label for="ineTraseraFile" class="file-upload-label">
+                                    <i class="fas fa-cloud-upload-alt" style="font-size: 32px; color: #1a3b4f;"></i>
+                                    <span>Subir INE (Trasera)</span>
+                                    <small>JPG, PNG, PDF (Máx. 5MB)</small>
+                                </label>
+                                <input type="file" id="ineTraseraFile" accept=".jpg,.jpeg,.png,.pdf" required>
+                                <div class="file-name" id="fileNameTrasera"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sección Aviso de Privacidad y Términos -->
+                <div class="legal-section">
+                    <h3 class="legal-title">Aviso de Privacidad</h3>
+                    <div class="legal-box">
+                        <div class="legal-box-content">
+                            <p><strong>ASESORÍA FINANCIERA DE MÉXICO, S.A. DE .C.V. SOFOM ENR</strong><br>
+                                Responsable del tratamiento de sus datos personales.</p>
+                            <p>ASESORÍA FINANCIERA DE MÉXICO, S.A. DE C.V. SOFOM ENR, mejor conocido como ASEFIMEX con
+                                domicilio en Avenida Central Oriente No. 1487-A, Colonia Centro, C.P. 29000, Tuxtla
+                                Gutiérrez, Chiapas, es responsable de recabar sus datos personales, y el uso que se le
+                                da a los mismos y de su protección</p>
+                            <p>La seguridad de su información personal es nuestra prioridad; es por ello que protegemos
+                                esta información mediante medidas de seguridad que garanticen la Confidencialidad,
+                                Integridad y Disponibilidad de la información, con el objeto de evitar pérdidas, mal
+                                uso, alteración, destrucción, acceso o tratamiento no autorizado de las mismas.</p>
+                            <p><strong>Finalidades del tratamiento de sus datos personales.</strong><br>
+                                Su información personal será utilizada para la operación y registro de los productos que
+                                usted hubiese contratado; así como para proveerle de servicios y productos financieros
+                                de acuerdo a sus intereses; informarle sobre nuevos productos o servicios; informarle
+                                sobre cambios de nuestros productos o servicios. Para las finalidades antes mencionadas,
+                                ASEFIMEX podrá recabar los siguientes datos personales:</p>
+                            <p>a) Para Personas físicas: nombre, domicilio, CURP, RFC, edad, fecha de nacimiento, lugar
+                                de nacimiento, estado civil, teléfono</p>
+                            <p>b) Personas Morales, denominación o razón social, domicilio, RFC, datos de la escritura
+                                constitutiva, datos de la escritura que contiene poder otorgado a favor del
+                                representante legal, nombre del representante legal, nombre de los principales
+                                accionistas, información de pago.</p>
+                            <p><strong>Transferencias de datos personales.</strong><br>
+                                Su información personal podrá ser transferida dentro y fuera del territorio nacional con
+                                Organismos, Instituciones, Empresas y Entidades de carácter público o privado, con los
+                                cuales ASEFIMEX, en virtud de ser necesario para el mejoramiento y evaluaciones en los
+                                servicios y productos que ASEFIMEX le brinda.</p>
+                            <p><strong>¿Cómo puede acceder, rectificar o cancelar sus datos personales u oponerse a su
+                                    uso?</strong><br>
+                                Usted tiene derecho a conocer que datos personales tenemos de usted, para qué los
+                                utilizamos y las condiciones del uso de ellos (Acceso). Así mismo, es su derecho
+                                solicitar la corrección de su información personal en caso de que esté desactualizada,
+                                sea inexacta o incompleta (Rectificación); que la eliminemos de nuestros registros o
+                                base de datos cuando considere que la misma no está siendo utilizada adecuadamente
+                                (Cancelación); así como oponerse al uso de sus datos personales para fines específicos
+                                (Oposición). Estos derechos se conocen como derechos ARCO.</p>
+                            <p>Para ello es necesario que presente su petición a través de los siguientes medios:</p>
+                            <p>1.- Presentándose en la Av. Central Oriente No. 1487-A, Col. Centro, Tuxtla Gutiérrez,
+                                Chiapas ó,<br>
+                                2.- Llamando al número de teléfono 961 6147676.</p>
+                            <p><strong>Revocación de consentimiento para el uso de sus datos personales.</strong><br>
+                                Usted puede revocar el consentimiento que, en su caso, nos haya otorgado para el
+                                tratamiento de sus datos personales. Sin embargo, es importante que tenga en cuenta que
+                                no en todos los casos podremos atender su solicitud o concluir el uso de forma
+                                inmediata, ya que es posible que por alguna obligación legal requiramos seguir tratando
+                                sus datos personales. Así mismo, usted deberá considerar que para ciertos fines, la
+                                revocación de su consentimiento implicará que no le podamos seguir prestando el servicio
+                                que nos solicitó, o la conclusión de su relación con nosotros.</p>
+                            <p>Para conocer el procedimiento y requisitos para revocar su consentimiento ponemos a su
+                                disposición el número de teléfono 961 6147676.</p>
+                            <p>Para revocar su consentimiento deberá presentar su solicitud a través de los siguientes
+                                medios:</p>
+                            <p>1.- Presentándose en la Av. Central Oriente No. 1487-A, Col. Centro, Tuxtla Gutiérrez,
+                                Chiapas ó,<br>
+                                2.- Llamando al número telefónico 961 6147676</p>
+                            <p>Así también, le informamos que usted tiene derecho a iniciar un Procedimiento de
+                                Protección de Datos ante el Instituto Federal de Acceso a la Información y Protección de
+                                Datos (www.ifai.gob.mx) dentro de los 15 días siguientes a la fecha en que reciba la
+                                respuesta de ASEFIMEX a partir de que concluya el plazo de 20 días contados a partir de
+                                la fecha de recepción de su solicitud de ejercicio de derechos</p>
+                            <p><strong>Modificaciones al aviso de privacidad.</strong><br>
+                                El presente aviso de privacidad puede sufrir modificaciones, cambios o actualizaciones
+                                derivadas de nuevos requerimientos legales, de nuestras propias necesidades por los
+                                productos o servicios que ofrecemos, de nuestras prácticas de privacidad, de cambios en
+                                nuestro modelo de negocio o por otras causas.</p>
+                            <p>Estas modificaciones estarán disponibles al público a través de nuestra página de
+                                internet www.asefimex.com</p>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-aceptar" id="aceptarAviso">Aceptar Aviso de Privacidad</button>
+                </div>
+
+                <div class="legal-section">
+                    <h3 class="legal-title">Términos y Condiciones</h3>
+                    <div class="legal-box">
+                        <div class="legal-box-content">
+                            <p>Por este conducto autorizo expresamente a ASESORÍA FINANCIERA DE MÉXICO, S.A. DE C.V.
+                                SOFOM ENR, en adelante "ASEFIMEX", para que por conducto de sus funcionarios facultados
+                                lleve a cabo investigaciones, sobre mi comportamiento crediticio o el de la Empresa que
+                                represento. Asimismo, declaro que conozco la naturaleza y alcance de las sociedades de
+                                información crediticia y de la información contenida en los reportes de crédito y
+                                reporte de crédito especial, declaro que conozco la naturaleza y alcance de la
+                                información que solicitará, del uso que hará de tal información y de que esta podrá
+                                realizar consultas periódicas sobre mi historial o el de la empresa que represento,
+                                consintiendo que esta autorización se encuentre vigente por un periodo de 3 años
+                                contados a partir de su expedición y en todo caso durante el tiempo que se mantenga la
+                                relación jurídica.</p>
+                            <p>La información a continuación proporcionada será utilizada únicamente para lectura y
+                                consulta de tu información, con la finalidad de ofrecerte un mejor servicio. ASESORÍA
+                                FINANCIERA DE MÉXICO, S.A. DE C.V. SOFOM ENR, en adelante "ASEFIMEX", no conserva
+                                ninguna copia de los mismos, ni de tus contraseñas. En caso de que el solicitante sea
+                                una Persona Moral, declaro bajo protesta de decir verdad Ser Representante Legal de la
+                                empresa mencionada en esta autorización, manifiesto que a la fecha de firma de la
+                                presente autorización los poderes no me han sido revocados, limitados, ni modificados de
+                                forma alguna. Acepto que este documento quede bajo propiedad de ASESORÍA FINANCIERA DE
+                                MÉXICO, S.A. DE C.V. SOFOM ENR, en adelante "ASEFIMEX" para efectos de control y
+                                cumplimiento del artículo 28 de la LRSIC.</p>
+                            <p>Asimismo, declaro que conozco la naturaleza y alcance de las sociedades de información
+                                crediticia y de la información contenida en los reportes de crédito y reporte de crédito
+                                especial, declaro que conozco la naturaleza y alcance de la información que solicitará,
+                                del uso que hará de tal información y de que esta podrá realizar consultas periódicas
+                                sobre mi historial o el de la empresa que represento, consintiendo que esta autorización
+                                se encuentre vigente por un periodo de 3 años contados a partir de su expedición y en
+                                todo caso durante el tiempo que se mantenga la relación jurídica.</p>
+                            <p>La información a continuación proporcionada será utilizada únicamente para lectura y
+                                consulta de tu información, con la finalidad de ofrecerte un mejor servicio. ASESORÍA
+                                FINANCIERA DE MÉXICO, S.A. DE C.V. SOFOM ENR, en adelante "ASEFIMEX", no conserva
+                                ninguna copia de los mismos, ni de tus contraseñas.</p>
+                            <p>En caso de que el solicitante sea una Persona Moral, declaro bajo protesta de decir
+                                verdad Ser Representante Legal de la empresa mencionada en esta autorización, manifiesto
+                                que a la fecha de firma de la presente autorización los poderes no me han sido
+                                revocados, limitados, ni modificados de forma alguna.</p>
+                            <p>Acepto que este documento quede bajo propiedad de ASESORÍA FINANCIERA DE MÉXICO, S.A. DE
+                                C.V. SOFOM ENR, en adelante "ASEFIMEX" para efectos de control y cumplimiento del
+                                artículo 28 de la LRSIC.</p>
+                        </div>
+                    </div>
+                    <button type="button" class="btn-aceptar" id="aceptarTerminos">Aceptar Términos y
+                        Condiciones</button>
+                </div>
+
+                <button type="submit" class="btn" id="btnContinuar1" disabled>Continuar</button>
+            </form>
+        </div>
+
+        <!-- Etapa 2: Detalles del Crédito (Ubicación y producto) -->
+        <div id="etapa2" class="etapa">
+            <h2>Tu crédito comienza aquí</h2>
+
+            <!-- Carrusel de productos (actualizado) -->
+            <div class="productos-carrusel">
+                <button class="carrusel-btn" id="carruselPrevBtn" aria-label="Anterior" disabled>❮</button>
+                <div class="carrusel-wrapper">
+                    <div class="carrusel-container" id="carruselProductos">
+                        <!-- Los productos se generarán dinámicamente con JS -->
+                    </div>
+                </div>
+                <button class="carrusel-btn" id="carruselNextBtn" aria-label="Siguiente">❯</button>
+            </div>
+            <div class="carrusel-indicators" id="carruselIndicators"></div>
+
+            <form id="formCredito">
+                <!-- Sección Ubicación General -->
+                <div class="form-section-title">Ubicación General</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="pais">País *</label>
+                        <select id="pais" required>
+                            <option value="México" selected>México</option>
+                        </select>
+                        <small class="hint-text">Solo disponible en México por el momento</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="codigoPostal">Código Postal *</label>
+                        <input type="text" id="codigoPostal" placeholder="Ej. 29000" maxlength="5" required>
+                        <small class="hint-text" id="cpStatus">Código postal a 5 dígitos</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="estado">Estado en donde vive *</label>
+                        <select id="estado" required>
+                            <option value="">Seleccione estado</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="municipio1">Municipio donde vive* (sin abreviaturas)</label>
+                        <input type="text" id="municipio1" list="municipios-list" placeholder="Ej. Tuxtla Gutiérrez"
+                            required>
+                        <datalist id="municipios-list">
+                            <!-- Opciones generadas por JS dependiendo del estado -->
+                        </datalist>
+                        <datalist id="municipios-cp-list">
+                            <!-- Opciones generadas por JS dependiendo del CP -->
+                        </datalist>
+                        <select id="municipioCpSelect" style="display:none; margin-top: 8px;">
+                            <!-- Opciones generadas por JS dependiendo del CP -->
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Sección Dirección completa -->
+                <div class="form-section-title">Dirección</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="calle">Calle (sin abreviaturas) *</label>
+                        <input type="text" id="calle" placeholder="Ej. Avenida Central Oriente" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="noExterior">No. Exterior *</label>
+                        <input type="text" id="noExterior" placeholder="Ej. 1487" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="noInterior">No. Interior</label>
+                        <input type="text" id="noInterior" placeholder="Ej. A, B, 1 (opcional)">
+                    </div>
+                    <div class="form-group">
+                        <label for="colonia">Colonia (sin abreviaturas) *</label>
+                        <input type="text" id="colonia" placeholder="Ej. Colonia Centro" required>
+                        <select id="coloniaCpSelect" style="display:none; margin-top: 8px;">
+                            <!-- Opciones generadas por JS dependiendo del CP -->
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="entreCalles">Entre calles</label>
+                        <input type="text" id="entreCalles" placeholder="Ej. Calle 1a y Calle 2a (opcional)">
+                    </div>
+                </div>
+
+                <!-- Sección Producto y condiciones -->
+                <div class="form-section-title">Producto y condiciones</div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="producto">Producto *</label>
+                        <select id="producto" required>
+                            <option value="">Seleccione producto</option>
+                            <option value="C-MOVIL">C-MOVIL</option>
+                            <option value="C-FACIL">C-FÁCIL</option>
+                            <option value="C-ESPECIAL">C-ESPECIAL</option>
+                            <option value="C-COSECHA">C-COSECHA</option>
+                            <option value="C-LIQUIDEZ">C-LIQUIDEZ</option>
+                            <option value="C-MUJER">C-MUJER</option>
+                            <option value="C-CREDICONTADO">CREDICONTADO</option>
+                            <option value="C-DISTRIBUIDOR">C-DISTRIBUIDOR</option>
+                            <option value="C-AUTO">C-AUTO</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="monto">Monto solicitado (MXN) *</label>
+                        <input type="number" id="monto" min="1000" max="500000" step="1" placeholder="Ej. 50000"
+                            required>
+                        <small class="hint-text">Monto mínimo $1,000 - máximo $500,000</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="plazo">Plazo en meses *</label>
+                        <input type="number" id="plazo" list="plazo-list" min="1" max="100" step="1"
+                            placeholder="Ej. 12" required>
+                        <datalist id="plazo-list">
+                            <!-- Opciones generadas por JS -->
+                        </datalist>
+                        <small class="hint-text">Seleccione de la lista o escriba el plazo (1-100 meses)</small>
+                    </div>
+                    <div class="form-group">
+                        <label for="periodicidad">Periodicidad de pagos *</label>
+                        <select id="periodicidad" required>
+                            <option value="">Seleccione periodicidad</option>
+                            <option value="7">Semanal</option>
+                            <option value="14">Catorcenal</option>
+                            <option value="15">Quincenal</option>
+                            <option value="28">Bicatorcenal</option>
+                            <option value="30">Mensual</option>
+                            <option value="1">Pago unico</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="cantidadPagos">Cantidad de Pagos *</label>
+                        <input type="number" id="cantidadPagos" step="1" placeholder="Se calcula automáticamente"
+                            readonly required>
+                        <small class="hint-text">Calculado automáticamente según plazo y periodicidad</small>
+                    </div>
+                </div>
+
+                <div class="info-consulta" style="margin-top: 20px;">
+                    <p>ⓘ Los plazos y montos están sujetos al producto seleccionado.</p>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn btn-secondary-outline" id="btnAnterior2">Anterior</button>
+                    <button type="submit" class="btn">Continuar</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Etapa 3: Pre-oferta y validación -->
+        <div id="etapa3" class="etapa">
+            <h2>Evaluación inmediata sin compromiso</h2>
+            <form id="formPreOferta">
+                <div class="form-group">
+                    <label for="actividadEconomica">ME DEDICO A</label>
+                    <select id="actividadEconomica" required>
+                        <option value="">Seleccione su actividad</option>
+                        <option value="OTRO_Y_MOTOTAXI">YA SOY MOTOTAXISTA Y TENGO OTRA ACTIVIDAD</option>
+                        <option value="OTRO_NUEVO_MOTOTAXI">SOY NUEVO EN EL MOTOTAXISMO Y TENGO OTRA ACTIVIDAD</option>
+                        <option value="SOLO_MOTOTAXI_RENOVACION">YA SOY MOTOTAXISTA Y QUIERO RENOVAR MI UNIDAD, NO TENGO
+                            OTRA ACTIVIDAD</option>
+                        <option value="SOLO_MOTOTAXI_ADQUIRIR_UNIDAD">SOY MOTOTAXISTA (CHOFER) Y QUIERO MI PROPIA UNIDAD
+                        </option>
+                        <option value="INICIAR_NEGOCIO_MOTOTAXI">SOY NUEVO EN EL MOTOTAXISMO Y NO CUENTO CON OTRA
+                            ACTIVIDAD, QUIERO INICIAR MI NEGOCIO</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="curp">CURP *</label>
+                    <input type="text" id="curp" maxlength="18" placeholder="AAAA######AAAAAA00" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="rfc">RFC *</label>
+                    <input type="text" id="rfc" maxlength="13" placeholder="AAAA######AAA" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Correo Electrónico</label>
+                    <input type="email" id="email" placeholder="ejemplo@correo.com">
+                    <small class="hint-text">Opcional - No obligatorio</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="telefono">Número Telefónico *</label>
+                    <input type="tel" id="telefono" maxlength="10" placeholder="5512345678" required>
+                </div>
+
+                <!-- Nuevo contenedor para botón NIP y selector de método -->
+                <div class="nip-send-container">
+                    <button type="button" id="btnEnviarNIP" class="btn-nip">Enviar NIP</button>
+
+                    <div class="method-buttons">
+                        <button type="button" id="btnWhatsApp" class="method-btn whatsapp selected">
+                            <i class="fab fa-whatsapp"></i>
+                            <span>WhatsApp</span>
+                        </button>
+                        <button type="button" id="btnSMS" class="method-btn sms">
+                            <i class="fas fa-sms"></i>
+                            <span>SMS</span>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="info-consulta">
+                    <p>Validaremos tus datos y consultaremos en Círculo de Crédito</p>
+                </div>
+
+                <div class="form-group nip-section">
+                    <label for="nip">Ingresa el NIP que recibiste en tu teléfono *</label>
+                    <input type="text" id="nip" maxlength="4" placeholder="0000" disabled required>
+                    <small>El NIP será enviado a tu teléfono</small>
+                </div>
+
+                <div class="checkbox-group">
+                    <input type="checkbox" id="autorizacion" required>
+                    <label for="autorizacion">Autorizo la consulta a Círculo de Crédito</label>
+                </div>
+
+                <div class="button-group">
+                    <button type="button" class="btn btn-secondary-outline" id="btnAnterior3">Anterior</button>
+                    <button type="button" id="btnSolicitarCredito" class="btn" disabled>Solicitar Crédito</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Etapa 4: Resultado -->
+        <div id="etapa4" class="etapa">
+            <h2>Resultado de tu Solicitud</h2>
+            <div class="resultado-container">
+                <div class="icono-exito">✓</div>
+                <p class="mensaje-felicidades">¡Felicidades!</p>
+                <p class="mensaje-autorizacion">Tu solicitud de crédito ha sido PRE-AUTORIZADO con observaciones.</p>
+                <p class="mensaje-contacto">Uno de nuestros ejecutivos se contactará contigo en los próximos minutos.
+                </p>
+            </div>
+            <button onclick="window.location.reload()" class="btn secondary">Nueva Solicitud</button>
+        </div>
+    </div>
+
+    <!-- Modal NIP -->
+    <div id="modalNIP" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <span class="close">&times;</span>
+                <h3>NIP Enviado</h3>
+            </div>
+            <div class="modal-body">
+                <div class="icono-exito-small">✓</div>
+                <p>Hemos enviado un NIP de verificación al número:</p>
+                <p class="telefono-modal" id="telefonoModal"></p>
+                <p class="nip-ejemplo">Para fines demostrativos, el NIP es: <strong>1234</strong></p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-modal" id="cerrarModal">Aceptar</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
