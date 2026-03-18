@@ -296,13 +296,8 @@
             overflow-y: auto;
         }
 
-        /* Mejora visual para los inputs con datalist */
-        input[list] {
-            background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="%236c757d" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>');
-            background-repeat: no-repeat;
-            background-position: right 15px center;
-            background-size: 16px;
-        }
+        /* Nota: no agregamos una flecha extra a inputs con datalist,
+           porque el navegador ya muestra su propio indicador. */
 
         /* Estilo para el campo de género con ambos uploads */
         .genero-with-uploads {
@@ -357,6 +352,13 @@
     </style>
     <!-- Agregar Font Awesome para iconos -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "vxfiav4bvf");
+    </script>
 </head>
 
 <body>
@@ -605,17 +607,9 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <label for="municipio1">Municipio donde vive* (sin abreviaturas)</label>
-                        <input type="text" id="municipio1" list="municipios-list" placeholder="Ej. Tuxtla Gutiérrez"
-                            required>
-                        <datalist id="municipios-list">
-                            <!-- Opciones generadas por JS dependiendo del estado -->
-                        </datalist>
-                        <datalist id="municipios-cp-list">
-                            <!-- Opciones generadas por JS dependiendo del CP -->
-                        </datalist>
-                        <select id="municipioCpSelect" style="display:none; margin-top: 8px;">
-                            <!-- Opciones generadas por JS dependiendo del CP -->
+                        <label for="municipio1">Municipio donde vive*</label>
+                        <select id="municipio1" required>
+                            <option value="">Seleccione municipio</option>
                         </select>
                     </div>
                 </div>
@@ -637,10 +631,10 @@
                     </div>
                     <div class="form-group">
                         <label for="colonia">Colonia (sin abreviaturas) *</label>
-                        <input type="text" id="colonia" placeholder="Ej. Colonia Centro" required>
-                        <select id="coloniaCpSelect" style="display:none; margin-top: 8px;">
+                        <input type="text" id="colonia" list="colonias-list" placeholder="Ej. Colonia Centro" required>
+                        <datalist id="colonias-list">
                             <!-- Opciones generadas por JS dependiendo del CP -->
-                        </select>
+                        </datalist>
                     </div>
                     <div class="form-group">
                         <label for="entreCalles">Entre calles</label>

@@ -42,46 +42,59 @@ document.addEventListener('DOMContentLoaded', function () {
     cargarEstados();
 
     // ==================== LISTA DE MUNICIPIOS DESDE API INEGI ====================
-    // Actualizar datalist de municipios al cambiar el estado
-    estadoSelect.addEventListener('change', async function() {
-        const estadoCve = this.value; // cve_agee del estado
-        const datalistMunicipios = document.getElementById('municipios-list');
-        const datalistMunicipiosCp = document.getElementById('municipios-cp-list');
-        const inputMunicipio = document.getElementById('municipio1');
-        
-        datalistMunicipios.innerHTML = ''; // Limpiar opciones anteriores
-        if (datalistMunicipiosCp) datalistMunicipiosCp.innerHTML = ''; // limpiar sugerencias por CP
-        inputMunicipio.value = ''; // Limpiar el input al cambiar de estado
-        // Si el municipio venía por CP, regresamos el datalist al de estado
-        if (inputMunicipio && inputMunicipio.getAttribute('list') === 'municipios-cp-list') {
-            inputMunicipio.setAttribute('list', 'municipios-list');
-        }
-        
-        if (!estadoCve) return; // Si seleccionó la opción por defecto, no hacer nada
+    const municipioSelect = document.getElementById('municipio1');
 
-        inputMunicipio.placeholder = "Cargando municipios...";
-        
+    function fillSelectBasic(selectEl, values, placeholder) {
+        if (!selectEl) return;
+        selectEl.innerHTML = '';
+        const optPlaceholder = document.createElement('option');
+        optPlaceholder.value = '';
+        optPlaceholder.textContent = placeholder || 'Seleccione...';
+        selectEl.appendChild(optPlaceholder);
+
+        values.forEach(v => {
+            const opt = document.createElement('option');
+            opt.value = v;
+            opt.textContent = v;
+            selectEl.appendChild(opt);
+        });
+    }
+
+    async function cargarMunicipiosPorEstado(estadoCve) {
+        if (!municipioSelect) return;
+        fillSelectBasic(municipioSelect, [], 'Cargando municipios...');
+        municipioSelect.disabled = false;
+
+        if (!estadoCve) {
+            fillSelectBasic(municipioSelect, [], 'Seleccione municipio');
+            return;
+        }
+
         try {
             const response = await fetch(`https://gaia.inegi.org.mx/wscatgeo/mgem/${estadoCve}`);
             const data = await response.json();
-            
+
             if (data && data.datos) {
-                // Ordenar alfabéticamente
-                const municipiosData = data.datos.sort((a, b) => a.nom_agem.localeCompare(b.nom_agem));
-                
-                municipiosData.forEach(mun => {
-                    const option = document.createElement('option');
-                    option.value = mun.nom_agem.toUpperCase();
-                    datalistMunicipios.appendChild(option);
-                });
-                inputMunicipio.placeholder = "Ej. Tuxtla Gutiérrez";
+                const municipiosData = data.datos
+                    .map(m => String(m.nom_agem || '').trim())
+                    .filter(Boolean)
+                    .sort((a, b) => a.localeCompare(b))
+                    .map(v => v.toUpperCase());
+
+                fillSelectBasic(municipioSelect, municipiosData, 'Seleccione municipio');
             } else {
-                inputMunicipio.placeholder = "Error al obtener municipios";
+                fillSelectBasic(municipioSelect, [], 'Error al obtener municipios');
             }
         } catch (error) {
             console.error("Error al cargar municipios:", error);
-            inputMunicipio.placeholder = "Error de conexión";
+            fillSelectBasic(municipioSelect, [], 'Error de conexión');
         }
+    }
+
+    // Actualizar municipios al cambiar el estado
+    estadoSelect.addEventListener('change', function () {
+        const estadoCve = this.value;
+        cargarMunicipiosPorEstado(estadoCve);
     });
 
 // ==================== CP -> MUNICIPIO / COLONIA (AUTOCOMPLETADO) ====================
@@ -89,11 +102,10 @@ const cpInputEtapa2 = document.getElementById('codigoPostal');
 const cpStatus = document.getElementById('cpStatus');
 const coloniaInput = document.getElementById('colonia');
 const datalistColonias = document.getElementById('colonias-list');
-const datalistMunicipios = document.getElementById('municipios-list');
-const datalistMunicipiosCp = document.getElementById('municipios-cp-list');
-const municipioCpSelect = document.getElementById('municipioCpSelect');
-const coloniaCpSelect = document.getElementById('coloniaCpSelect');
-const municipioInputGlobal = document.getElementById('municipio1');
+const datalistMunicipios = null;
+const datalistMunicipiosCp = null;
+const municipioCpSelect = null;
+const municipioSelectGlobal = document.getElementById('municipio1');
 
 const CP_LOOKUP_URL = 'https://sepomex.icalialabs.com/api/v1/zip_codes?zip_code=';
 let cpLookupAbortController = null;
@@ -147,18 +159,19 @@ function showSelect(selectEl, show) {
 
 function clearCpSuggestions() {
     fillDatalist(datalistColonias, []);
-    fillDatalist(datalistMunicipiosCp, []);
-    if (municipioCpSelect) municipioCpSelect.innerHTML = '';
-    if (coloniaCpSelect) coloniaCpSelect.innerHTML = '';
-    showSelect(municipioCpSelect, false);
-    showSelect(coloniaCpSelect, false);
+    // municipio ahora es select, no datalist/select extra
 
     // Rehabilitar edición manual de estado y municipio cuando se limpian sugerencias
     if (estadoSelect) {
         estadoSelect.disabled = false;
     }
-    if (municipioInputGlobal) {
-        municipioInputGlobal.readOnly = false;
+    if (municipioSelectGlobal) {
+        municipioSelectGlobal.disabled = false;
+        // Repoblar municipios por estado seleccionado (si hay)
+        if (estadoSelect && estadoSelect.value) {
+            // Usa la función del bloque superior si existe en scope
+            try { cargarMunicipiosPorEstado(estadoSelect.value); } catch (_) {}
+        }
     }
 }
 
@@ -179,9 +192,10 @@ async function lookupCpAndAutofill(cp) {
         const zipCodes = Array.isArray(data && data.zip_codes) ? data.zip_codes : [];
         if (zipCodes.length === 0) {
             setCpStatus('No encontramos datos para este CP. Puedes capturar municipio y colonia manualmente.', true);
-            // Volver a sugerencias de municipio por estado (si existen)
-            const municipioInput = document.getElementById('municipio1');
-            if (municipioInput) municipioInput.setAttribute('list', 'municipios-list');
+            // Volver a municipios por estado
+            if (estadoSelect && estadoSelect.value) {
+                try { cargarMunicipiosPorEstado(estadoSelect.value); } catch (_) {}
+            }
             return;
         }
 
@@ -211,40 +225,31 @@ async function lookupCpAndAutofill(cp) {
             }
         }
 
-        // Municipio por CP: autollenar y bloquear edición
-        fillDatalist(datalistMunicipiosCp, municipios);
-        const municipioInput = document.getElementById('municipio1');
-        if (municipioInput) {
-            municipioInput.setAttribute('list', 'municipios-cp-list');
+        // Municipio por CP: cargar en el select y bloquear captura libre
+        if (municipioSelectGlobal) {
+            fillSelectBasic(municipioSelectGlobal, municipios, 'Seleccione municipio');
             if (municipios.length >= 1) {
-                municipioInput.value = municipios[0];
-                municipioInput.readOnly = true;
-                showSelect(municipioCpSelect, false);
-            } else {
-                municipioInput.readOnly = false;
+                municipioSelectGlobal.value = municipios[0];
             }
+            // Si el CP determina el municipio, lo dejamos bloqueado para evitar cambios inconsistentes
+            municipioSelectGlobal.disabled = municipios.length === 1;
         }
 
-        // Colonias por CP: mantener solo el desplegable externo (select)
-        fillDatalist(datalistColonias, []); // ya no usamos datalist interno
-        if (coloniaInput) {
-            if (colonias.length > 1) {
-                fillSelect(coloniaCpSelect, colonias, 'una colonia');
-                showSelect(coloniaCpSelect, true);
-            } else {
-                showSelect(coloniaCpSelect, false);
-                if (colonias.length === 1) coloniaInput.value = colonias[0];
-            }
+        // Colonias por CP: usar solo el datalist del propio campo de colonia
+        fillDatalist(datalistColonias, colonias);
+        if (coloniaInput && colonias.length === 1) {
+            coloniaInput.value = colonias[0];
         }
 
-        const msgExtra = colonias.length > 1 ? 'Selecciona una colonia de la lista o escríbela manualmente.' : '';
+        const msgExtra = colonias.length > 1 ? 'Selecciona una colonia de la lista desplegable de la casilla o escríbela manualmente.' : '';
         setCpStatus(`CP válido. Encontramos ${colonias.length} colonia(s). ${msgExtra}`.trim());
     } catch (err) {
         if (err && err.name === 'AbortError') return;
         console.error('Error lookup CP:', err);
         setCpStatus('No se pudo consultar el CP (sin conexión). Puedes capturar municipio y colonia manualmente.', true);
-        const municipioInput = document.getElementById('municipio1');
-        if (municipioInput) municipioInput.setAttribute('list', 'municipios-list');
+        if (estadoSelect && estadoSelect.value) {
+            try { cargarMunicipiosPorEstado(estadoSelect.value); } catch (_) {}
+        }
     }
 }
 
@@ -263,32 +268,7 @@ if (cpInputEtapa2) {
     });
 }
 
-if (municipioCpSelect) {
-    municipioCpSelect.addEventListener('change', (e) => {
-        const v = String(e.target.value || '');
-        const municipioInput = document.getElementById('municipio1');
-        if (!municipioInput) return;
-        if (v === '__MANUAL__') {
-            municipioInput.value = '';
-            municipioInput.focus();
-            return;
-        }
-        if (v) municipioInput.value = v;
-    });
-}
-
-if (coloniaCpSelect) {
-    coloniaCpSelect.addEventListener('change', (e) => {
-        const v = String(e.target.value || '');
-        if (!coloniaInput) return;
-        if (v === '__MANUAL__') {
-            coloniaInput.value = '';
-            coloniaInput.focus();
-            return;
-        }
-        if (v) coloniaInput.value = v;
-    });
-}
+// municipioCpSelect eliminado (municipio ahora es un select único)
 
 // ==================== PLAZOS EN MESES (DATALIST UI) ====================
 function generarOpcionesDatalist() {
@@ -687,7 +667,7 @@ document.getElementById('formCredito').addEventListener('submit', function (e) {
     // El valor de estadoSelect ahora es la clave (cve). Si quisieras enviar el nombre a tu backend, usa:
     // const estado = document.getElementById('estado').options[document.getElementById('estado').selectedIndex].dataset.nombre;
     const estado = document.getElementById('estado').value;
-    const municipio = document.getElementById('municipio1').value.trim();
+    const municipio = document.getElementById('municipio1').value;
     const calle = document.getElementById('calle').value.trim();
     const noExterior = document.getElementById('noExterior').value.trim();
     const colonia = document.getElementById('colonia').value.trim();
@@ -882,12 +862,7 @@ campoNIP.addEventListener('input', function (e) {
 });
 
 // ==================== VALIDACIONES PARA ETAPA 2 ====================
-const municipioInput = document.getElementById('municipio1');
-if (municipioInput) {
-    municipioInput.addEventListener('input', function (e) {
-        e.target.value = e.target.value.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s.-]/g, '').toUpperCase();
-    });
-}
+// municipio ahora es select (sin captura libre)
 
 const textoDireccionIds = ['calle', 'colonia'];
 textoDireccionIds.forEach(id => {
