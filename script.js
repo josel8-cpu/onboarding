@@ -324,9 +324,7 @@ function inicializarCarrusel() {
         { nombre: 'C-MOVIL', imagen: 'c-movil.jpeg' },
         { nombre: 'C-FACIL', imagen: 'c-facil.jpeg' },
         { nombre: 'C-ESPECIAL', imagen: 'c-especial.jpeg' },
-        { nombre: 'C-COSECHA', imagen: 'c-cosecha.jpeg' },
         { nombre: 'C-LIQUIDEZ', imagen: 'c-liquidez.jpeg' },
-        { nombre: 'C-MUJER', imagen: 'c-mujer.jpeg' },
         { nombre: 'C-CREDICONTADO', imagen: 'credicontado.jpeg' },
         { nombre: 'C-DISTRIBUIDOR', imagen: 'c-distribuidor.jpeg' },
         { nombre: 'C-AUTO', imagen: 'c-auto.jpeg' }
