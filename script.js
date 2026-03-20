@@ -318,15 +318,16 @@ function inicializarCarrusel() {
     const indicatorsContainer = document.getElementById('carruselIndicators');
     const prevBtn = document.getElementById('carruselPrevBtn');
     const nextBtn = document.getElementById('carruselNextBtn');
+    const productoSelect = document.getElementById('producto');
 
     // Lista de productos (solo nombre y ruta de imagen)
     const productos = [
         { nombre: 'C-MOVIL', imagen: 'c-movil.jpeg' },
         { nombre: 'C-FACIL', imagen: 'c-facil.jpeg' },
-        { nombre: 'C-ESPECIAL', imagen: 'c-especial.jpeg' },
+        { nombre: 'C-ESPECIAL', imagen: 'c-especial-nuevo.jpeg' },
         { nombre: 'C-LIQUIDEZ', imagen: 'c-liquidez.jpeg' },
         { nombre: 'C-CREDICONTADO', imagen: 'credicontado.jpeg' },
-        { nombre: 'C-DISTRIBUIDOR', imagen: 'c-distribuidor.jpeg' },
+        { nombre: 'C-DISTRIBUIDOR', imagen: 'c-distribuidor-nuevo.jpeg' },
         { nombre: 'C-AUTO', imagen: 'c-auto.jpeg' }
     ];
 
@@ -334,10 +335,30 @@ function inicializarCarrusel() {
     carrusel.innerHTML = '';
     indicatorsContainer.innerHTML = '';
 
+    let productoSeleccionadoIndex = 0;
+
+    function seleccionarProducto(index, sincronizarCarrusel = false) {
+        if (index < 0 || index >= productos.length) return;
+        productoSeleccionadoIndex = index;
+
+        document.querySelectorAll('.producto-card').forEach((card, idx) => {
+            card.classList.toggle('selected-producto', idx === productoSeleccionadoIndex);
+        });
+
+        if (productoSelect) {
+            productoSelect.value = productos[productoSeleccionadoIndex].nombre;
+        }
+
+        if (sincronizarCarrusel) {
+            goToSlide(productoSeleccionadoIndex);
+        }
+    }
+
     // Crear tarjetas de producto con imagen desde carpeta img/
     productos.forEach((prod, index) => {
         const card = document.createElement('div');
         card.className = 'producto-card';
+        card.style.cursor = 'pointer';
 
         // Ruta de la imagen (sin './')
         const imgSrc = `img/${prod.imagen}`;
@@ -346,6 +367,7 @@ function inicializarCarrusel() {
                 <img src="${imgSrc}" alt="${prod.nombre}" class="producto-imagen" onerror="this.onerror=null; this.src='https://via.placeholder.com/200x200?text=${prod.nombre}'">
                 <div class="producto-titulo">${prod.nombre}</div>
             `;
+        card.addEventListener('click', () => seleccionarProducto(index, true));
         carrusel.appendChild(card);
 
         // Crear indicador
@@ -430,8 +452,18 @@ function inicializarCarrusel() {
         updateCarousel();
     });
 
+    if (productoSelect) {
+        productoSelect.addEventListener('change', function () {
+            const nuevoIndex = productos.findIndex(p => p.nombre === this.value);
+            if (nuevoIndex !== -1) {
+                seleccionarProducto(nuevoIndex, true);
+            }
+        });
+    }
+
     // Inicializar
     setTimeout(updateCarousel, 100); // Pequeño delay para asegurar que los elementos tengan dimensiones
+    seleccionarProducto(0);
 }
 inicializarCarrusel();
 
