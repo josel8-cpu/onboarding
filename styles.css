@@ -12,6 +12,21 @@ body {
     line-height: 1.6;
 }
 
+.back-to-home {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a3b4f;
+    text-decoration: none;
+    margin-bottom: 8px;
+}
+
+.back-to-home:hover {
+    text-decoration: underline;
+}
+
 .container {
     max-width: 900px;
     margin: 40px auto;

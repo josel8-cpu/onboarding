@@ -1,0 +1,78 @@
+/* Flujo persona moral — base compartida + ajustes */
+@import url('styles.css');
+
+.back-to-home {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #1a3b4f;
+    text-decoration: none;
+    margin-bottom: 8px;
+}
+
+.back-to-home:hover {
+    text-decoration: underline;
+}
+
+.form-section-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin: 25px 0 15px;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed #dee2e6;
+    letter-spacing: -0.2px;
+}
+
+.form-section-title:first-of-type {
+    margin-top: 0;
+}
+
+.hint-text {
+    font-size: 13px;
+    color: #6c757d;
+    margin-top: 4px;
+    display: block;
+}
+
+.empresa-docs {
+    grid-column: span 2;
+}
+
+.uploads-grid-empresa {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-top: 10px;
+}
+
+.uploads-grid-empresa .full-row {
+    grid-column: 1 / -1;
+}
+
+@media (max-width: 640px) {
+    .empresa-docs {
+        grid-column: span 1;
+    }
+
+    .uploads-grid-empresa {
+        grid-template-columns: 1fr;
+    }
+}
+
+#ineFrenteFile,
+#ineAtrasFile {
+    display: none;
+}
+
+.producto-card.selected-producto {
+    border: 2px solid #1a3b4f;
+    box-shadow: 0 12px 26px rgba(26, 59, 79, 0.18);
+}
+
+datalist {
+    max-height: 200px;
+    overflow-y: auto;
+}
