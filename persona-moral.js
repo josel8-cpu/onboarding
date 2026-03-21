@@ -330,13 +330,14 @@ document.addEventListener('DOMContentLoaded', function () {
         const productoSelect = document.getElementById('producto');
 
         const productos = [
-            { nombre: 'C-MOVIL', imagen: 'c-movil.jpeg' },
-            { nombre: 'C-FACIL', imagen: 'c-facil.jpeg' },
-            { nombre: 'C-ESPECIAL', imagen: 'c-especial-nuevo.jpeg' },
-            { nombre: 'C-LIQUIDEZ', imagen: 'c-liquidez.jpeg' },
-            { nombre: 'C-CREDICONTADO', imagen: 'credicontado.jpeg' },
-            { nombre: 'C-DISTRIBUIDOR', imagen: 'c-distribuidor-nuevo.jpeg' },
-            { nombre: 'C-AUTO', imagen: 'c-auto.jpeg' }
+            { nombre: 'C-MOVIL', imagen: 'c-movil.jpeg', descripcion: 'Publico en general que desea un motocarro para transporte publico' },
+            { nombre: 'C-FACIL', imagen: 'c-facil.jpeg', descripcion: 'Publico en general que desea un motocarro de carga o transporte privado' },
+            { nombre: 'C-CREDICONTADO', imagen: 'credicontado.jpeg', descripcion: 'Publico en general que requiera financiamiento a corto plazo para el cierre de una compra.' },
+            { nombre: 'C-EMPREDEDOR', imagen: 'c-emprendedor-nuevo.jpeg', descripcion: 'Personas duenas de mototaxi con actividad economica principal ser mototaxistas.' },
+            { nombre: 'C-LIQUIDEZ', imagen: 'c-liquidez.jpeg', descripcion: 'Clientes activos que requieran un credito paralelo.' },
+            { nombre: 'C-AUTO', imagen: 'c-auto.jpeg', descripcion: 'Publico en general' },
+            { nombre: 'C-MUJER', imagen: 'c-mujer.jpeg', descripcion: 'Familiares mujer de los acreditados hasta segundo grado de consanguineidad.' },
+            { nombre: 'C-COSECHA', imagen: 'c-cosecha.jpeg', descripcion: 'Sector agropecuario' }
         ];
 
         if (!carrusel || !indicatorsContainer) return;
@@ -364,6 +365,10 @@ document.addEventListener('DOMContentLoaded', function () {
             card.innerHTML = `
                 <img src="${imgSrc}" alt="${prod.nombre}" class="producto-imagen" onerror="this.onerror=null; this.src='https://via.placeholder.com/200x200?text=${prod.nombre}'">
                 <div class="producto-titulo">${prod.nombre}</div>
+                <div class="producto-overlay">
+                    <div class="producto-overlay-titulo">${prod.nombre}</div>
+                    <div class="producto-overlay-desc">${prod.descripcion}</div>
+                </div>
             `;
             card.addEventListener('click', () => seleccionarProducto(index, true));
             carrusel.appendChild(card);

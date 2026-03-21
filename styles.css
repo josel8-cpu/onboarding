@@ -724,6 +724,8 @@ input[readonly] {
     align-items: center;
     justify-content: center;
     min-height: 350px;
+    position: relative;
+    overflow: hidden;
 }
 
 .producto-card:hover {
@@ -737,6 +739,8 @@ input[readonly] {
     object-fit: contain;
     margin-bottom: 20px;
     border-radius: 12px;
+    transition: transform 0.7s ease;
+    backface-visibility: hidden;
 }
 
 .producto-titulo {
@@ -744,6 +748,41 @@ input[readonly] {
     color: #1a3b4f;
     font-size: 18px;
     line-height: 1.2;
+}
+
+.producto-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(26, 59, 79, 0.94);
+    color: #fff;
+    padding: 18px 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    opacity: 0;
+    transition: opacity 0.35s ease;
+    pointer-events: none;
+}
+
+.producto-overlay-titulo {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 8px;
+}
+
+.producto-overlay-desc {
+    font-size: 13px;
+    line-height: 1.4;
+}
+
+.producto-card:hover .producto-imagen {
+    transform: rotateY(180deg);
+}
+
+.producto-card:hover .producto-overlay {
+    opacity: 1;
 }
 
 /* Reducir height de las cards ya que tienen menos info y la imagen es más chica ahora */
