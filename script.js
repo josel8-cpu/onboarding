@@ -907,14 +907,14 @@ textoDireccionIds.forEach(id => {
 const noExterior = document.getElementById('noExterior');
 if (noExterior) {
     noExterior.addEventListener('input', function (e) {
-        e.target.value = e.target.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+        e.target.value = e.target.value.replace(/[^a-zA-Z0-9\s]/g, '').toUpperCase();
     });
 }
 
 const noInterior = document.getElementById('noInterior');
 if (noInterior) {
     noInterior.addEventListener('input', function (e) {
-        e.target.value = e.target.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+        e.target.value = e.target.value.replace(/[^a-zA-Z0-9\s]/g, '').toUpperCase();
     });
 }
 

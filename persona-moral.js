@@ -810,7 +810,7 @@ document.addEventListener('DOMContentLoaded', function () {
             const el = document.getElementById(id2);
             if (el) {
                 el.addEventListener('input', function (e) {
-                    e.target.value = e.target.value.replace(/[^a-zA-Z0-9]/g, '').toUpperCase();
+                    e.target.value = e.target.value.replace(/[^a-zA-Z0-9\s]/g, '').toUpperCase();
                 });
             }
         });
